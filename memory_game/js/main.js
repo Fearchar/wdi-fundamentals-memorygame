@@ -22,13 +22,20 @@ var cards = [
 ];
 var cardsInPlay = [];
 
+function resetBoard() {
+  randomiseCardOrder(cards);
+  Array.from(document.querySelector("#game-board").children).forEach(element => element.setAttribute("src", "images/back.png"));
+  cardsInPlay = [];
+}
+
 function checkForMatch() {
   if (cardsInPlay[0] === cardsInPlay[1]) {
     alert("You found a match!");
   } else {
     alert("Sorry, try again.");
   }
-};
+  resetBoard();
+}
 
 function flipCard() {
   var cardId = this.getAttribute("data-id");
@@ -38,11 +45,16 @@ function flipCard() {
   cardsInPlay.push(cards[cardId].rank);
   this.setAttribute("src", cards[cardId].cardImage);
   if (cardsInPlay.length === 2) {
-    checkForMatch();
+    setTimeout(checkForMatch, 350);
   }
-};
+}
+
+function randomiseCardOrder(cardArray) {
+  return cardArray.sort(c => Math.random() - 0.5);
+}
 
 function createBoard() {
+  randomiseCardOrder(cards);
   for (var i = 0; i < cards.length; i++) {
     var cardElement = document.createElement("img");
     cardElement.setAttribute("src", "images/back.png");
