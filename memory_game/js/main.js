@@ -2,25 +2,31 @@ var cards = [
   {
     rank: "queen", 
     suit: "hearts",
-    cardImage: "images/queen-of-hearts.png"
+    cardImage: "images/queen-of-hearts.png",
+    node: undefined
   },
   {
     rank: "queen", 
     suit: "diamonds",
-    cardImage: "images/queen-of-diamonds.png"
+    cardImage: "images/queen-of-diamonds.png",
+    node: undefined
   },
   {
     rank: "king", 
     suit: "hearts",
-    cardImage: "images/king-of-hearts.png"
+    cardImage: "images/king-of-hearts.png",
+    node: undefined
   },
   {
     rank: "king", 
     suit: "diamonds",
-    cardImage: "images/king-of-diamonds.png"
+    cardImage: "images/king-of-diamonds.png",
+    node: undefined
   }
 ];
+
 var cardsInPlay = [];
+var matchedCards = [];
 
 function randomiseCardOrder(cardArray) {
   for (var i = cardArray.length - 1; i > 0; i--) {
@@ -31,19 +37,32 @@ function randomiseCardOrder(cardArray) {
   };
 }
 
-function resetBoard() {
-  randomiseCardOrder(cards);
+function turnCardsFaceDown() {
   Array.from(document.querySelector("#game-board").children).forEach(element => element.setAttribute("src", "images/back.png"));
+}
+
+function resetBoard() {
+  turnCardsFaceDown();
+  randomiseCardOrder(cards);
   cardsInPlay = [];
+  matchedCards = [];
 }
 
 function checkForMatch() {
-  if (cardsInPlay[0] === cardsInPlay[1]) {
-    alert("You found a match!");
+  if (cardsInPlay[0].rank === cardsInPlay[1].rank) {
+    if (cardsInPlay.length + matchedCards.length === 4) {
+      alert("You win!");
+      resetBoard();
+    } else {
+      alert("You found a match!");
+      matchedCards = cardsInPlay;
+      cardsInPlay = [];
+    }
   } else {
     alert("Sorry, try again.");
+    turnCardsFaceDown();
+    cardsInPlay = [];
   }
-  resetBoard();
 }
 
 function flipCard() {
@@ -51,10 +70,12 @@ function flipCard() {
   console.log("User flipped " +  cards[cardId].rank);
   console.log(cards[cardId].cardImage);
   console.log(cards[cardId].suit);
-  cardsInPlay.push(cards[cardId].rank);
-  this.setAttribute("src", cards[cardId].cardImage);
-  if (cardsInPlay.length === 2) {
-    setTimeout(checkForMatch, 350);
+  if (cards[cardId] !== cardsInPlay[0]) {
+    cardsInPlay.push(cards[cardId]);
+    this.setAttribute("src", cards[cardId].cardImage);
+    if (cardsInPlay.length === 2) {
+      setTimeout(checkForMatch, 250);
+    }
   }
 }
 
@@ -66,6 +87,7 @@ function createBoard() {
     cardElement.setAttribute("data-id", i);
     cardElement.addEventListener('click', flipCard);
     document.querySelector("#game-board").appendChild(cardElement);
+    cards[i].node = cardElement;
   }
 }
 
