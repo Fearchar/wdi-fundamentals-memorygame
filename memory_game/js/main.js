@@ -22,6 +22,15 @@ var cards = [
 ];
 var cardsInPlay = [];
 
+function randomiseCardOrder(cardArray) {
+  for (var i = cardArray.length - 1; i > 0; i--) {
+      var randomIndex = Math.floor(Math.random() * (i + 1));
+      var toBeSwapped = cardArray[i];
+      cardArray[i] = cardArray[randomIndex];
+      cardArray[randomIndex] = toBeSwapped;
+  };
+}
+
 function resetBoard() {
   randomiseCardOrder(cards);
   Array.from(document.querySelector("#game-board").children).forEach(element => element.setAttribute("src", "images/back.png"));
@@ -47,10 +56,6 @@ function flipCard() {
   if (cardsInPlay.length === 2) {
     setTimeout(checkForMatch, 350);
   }
-}
-
-function randomiseCardOrder(cardArray) {
-  return cardArray.sort(c => Math.random() - 0.5);
 }
 
 function createBoard() {
